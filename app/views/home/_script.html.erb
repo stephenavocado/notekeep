@@ -2,7 +2,9 @@
 
 class App {
   constructor() {
-    this.notes = [];
+    this.notes = JSON.parse(localStorage.getItem('notes')) || [];
+    // if there are notes saved to local storage, save them to this.notes, if not, set empty array
+    // this.notes = [];
     this.title = '';
     this.text = '';
     this.id = '';
@@ -22,6 +24,8 @@ class App {
     this.$colorTooltip = document.querySelector('#color-tooltip');
     // using $ to show that we are working with an html element as opposed to data
 
+    this.render();
+    // display initial notes available on the this.notes property
     this.addEventListeners();
   }
 
@@ -156,7 +160,7 @@ class App {
       id: this.notes.length > 0 ? this.notes[this.notes.length -1].id + 1 : 1
     };
     this.notes = [...this.notes, newNote];
-    this.displayNotes(); 
+    this.render(); 
     this.closeForm();
     // close form after adding note
   }
@@ -168,9 +172,9 @@ class App {
     this.notes = this.notes.map(note => 
       note.id === Number(this.id) ? { ...note, title, text } : note
     );
-    // iterate over notes, find it by it's id, update it's title and text properties
-    this.displayNotes();
     // convert this.id to an integer
+    // iterate over notes, find it by it's id, update it's title and text properties
+    this.render();
   }
 
   editNoteColor(color) {
@@ -178,7 +182,7 @@ class App {
       note.id === Number(this.id) ? { ...note, color } : note
     );
     // iterate over notes, find it by it's id, update it's color property
-    this.displayNotes();
+    this.render();
   }
 
   selectNote(event) {
@@ -199,7 +203,16 @@ class App {
     if (!event.target.matches('.toolbar-delete')) return;
     const id = event.target.dataset.id;
     this.notes = this.notes.filter(note => note.id !== Number(id));
+    this.render();
+  }
+
+  render() {
+    this.saveNotes();
     this.displayNotes();
+  }
+
+  saveNotes() {
+    localStorage.setItem('notes', JSON.stringify(this.notes));
   }
  
   displayNotes() {
