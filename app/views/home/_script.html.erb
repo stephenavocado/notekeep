@@ -18,6 +18,7 @@ class App {
     this.$modal = document.querySelector('.modal');
     this.$modalTitle = document.querySelector('.modal-title');
     this.$modalText = document.querySelector('.modal-text');
+    this.$modalCloseButton = document.querySelector('.modal-close-button')
     // using $ to show that we are working with an html element as opposed to data
 
     this.addEventListeners();
@@ -45,6 +46,10 @@ class App {
       event.stopPropagation();
       // will stop event from propagating up to document body handler
       this.closeForm();
+    });
+
+    this.$modalCloseButton.addEventListener('click', event => {
+      this.closeModal(event);
     });
   }
 
@@ -91,6 +96,11 @@ class App {
   }
   // find whether targeted element was closest to .note
 
+  closeModal(event) {
+    this.editNote();
+    this.$modal.classList.toggle('open-modal');
+  }
+
   // destructure note object that allows us to use object shorthand (title & text) 
   addNote({ title, text }) {
     const newNote = {
@@ -103,6 +113,17 @@ class App {
     this.displayNotes(); 
     this.closeForm();
     // close form after adding note
+  }
+
+  editNote() {
+    const title = this.$modalTitle.value;
+    const text = this.$modalText.value;
+    // user map to transform array and keep at same length 
+    this.notes = this.notes.map(note => 
+      note.id === Number(this.id) ? { ...note, title, text } : note
+    );
+    this.displayNotes();
+    // convert this.id to an integer
   }
 
   selectNote(event) {
