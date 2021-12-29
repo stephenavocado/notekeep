@@ -49,6 +49,13 @@ class App {
     });
     // use function to get the right 'this' for the tooltip
 
+    this.$colorTooltip.addEventListener('click', event => {
+      const color = event.target.dataset.color;
+      if (color) {
+        this.editNoteColor(color);
+      }
+    });
+
     this.$form.addEventListener('submit', event => {
       event.preventDefault();
       const title = this.$noteTitle.value;
@@ -121,7 +128,8 @@ class App {
 
   openTooltip(event) {
     if (!event.target.matches('.toolbar-color')) return;
-    this.id = event.target.nextElementSibling.dataset.id;
+    this.id = event.target.dataset.id;
+    // this.id = event.target.nextElementSibling.dataset.id;
     // gets note div which allows us to access dataset id
     const noteCoords = event.target.getBoundingClientRect();
     // coordinates of where user is hovering to make sure tooltip shows up in right place
@@ -157,8 +165,17 @@ class App {
     this.notes = this.notes.map(note => 
       note.id === Number(this.id) ? { ...note, title, text } : note
     );
+    // iterate over notes, find it by it's id, update it's title and text properties
     this.displayNotes();
     // convert this.id to an integer
+  }
+
+  editNoteColor(color) {
+    this.notes = this.notes.map(note => 
+      note.id === Number(this.id) ? { ...note, color } : note
+    );
+    // iterate over notes, find it by it's id, update it's color property
+    this.displayNotes();
   }
 
   selectNote(event) {
@@ -184,7 +201,7 @@ class App {
         <div class="note-text">${note.text}</div>
         <div class="toolbar-container">
           <div class="toolbar">
-            <img class="toolbar-color" src="https://icon.now.sh/palette">
+            <img class="toolbar-color" data-id="${note.id}"src="https://icon.now.sh/palette">
             <img class="toolbar-delete" src="https://icon.now.sh/delete">
           </div>
         </div>
