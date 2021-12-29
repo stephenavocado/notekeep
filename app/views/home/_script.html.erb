@@ -10,6 +10,7 @@ class App {
     this.$noteTitle = document.querySelector('#note-title');
     this.$noteText = document.querySelector('#note-text');
     this.$formButtons = document.querySelector('#form-buttons');
+    this.$formCloseButton = document.querySelector('#form-close-button');
     // using $ to show that we are working with an html element as opposed to data
 
     this.addEventListeners();
@@ -28,17 +29,28 @@ class App {
       if (hasNote) {
         // add note
         this.addNote({ title, text });
-
       }
+    });
+
+    this.$formCloseButton.addEventListener('click', event => {
+      event.stopPropagation();
+      // will stop event from propagating up to document body handler
+      this.closeForm();
     });
   }
 
   handleFormClick(event) {
     const isFormClicked = this.$form.contains(event.target);
 
+    const title = this.$noteTitle.value;
+    const text = this.$noteText.value;
+    const hasNote = title || text;
+
     if (isFormClicked) {
       // open form
       this.openForm();
+    } else if (hasNote) {
+      this.addNote({ title, text });
     } else {
       // close form
       this.closeForm();
@@ -61,10 +73,11 @@ class App {
     // clears form after submitting
   }
 
-  addNote(note) {
+  // destructure note object that allows us to use object shorthand (title & text) 
+  addNote({ title, text }) {
     const newNote = {
-      title: note.title,
-      text: note.text,
+      title,
+      text,
       color: 'white',
       id: this.notes.length > 0 ? this.notes[this.notes.length -1].id + 1 : 1
     };
