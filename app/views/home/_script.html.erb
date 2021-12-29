@@ -40,6 +40,15 @@ class App {
       this.closeTooltip(event);      
     });
 
+    this.$colorTooltip.addEventListener('mouseover', function() {
+      this.style.display = 'flex';
+    });
+
+    this.$colorTooltip.addEventListener('mouseout', function() {
+      this.style.display = 'none';
+    });
+    // use function to get the right 'this' for the tooltip
+
     this.$form.addEventListener('submit', event => {
       event.preventDefault();
       const title = this.$noteTitle.value;
@@ -117,7 +126,7 @@ class App {
     const noteCoords = event.target.getBoundingClientRect();
     // coordinates of where user is hovering to make sure tooltip shows up in right place
     const horizontal = noteCoords.left;
-    const vertical = window.scrollY;
+    const vertical = window.scrollY - 20;
     this.$colorTooltip.style.transform = `translate(${horizontal}px, ${vertical}px)`;
     this.$colorTooltip.style.display = 'flex';
   }
