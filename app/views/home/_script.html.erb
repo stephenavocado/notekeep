@@ -8,7 +8,7 @@ class App {
     this.id = '';
     // instance properties that make them available to other parts of app 
     
-    this.$placeholder = document.querySelector('#placeholder')
+    this.$placeholder = document.querySelector('#placeholder');
     this.$form = document.querySelector('#form');
     this.$notes = document.querySelector('#notes');
     this.$noteTitle = document.querySelector('#note-title');
@@ -18,7 +18,8 @@ class App {
     this.$modal = document.querySelector('.modal');
     this.$modalTitle = document.querySelector('.modal-title');
     this.$modalText = document.querySelector('.modal-text');
-    this.$modalCloseButton = document.querySelector('.modal-close-button')
+    this.$modalCloseButton = document.querySelector('.modal-close-button');
+    this.$colorTooltip = document.querySelector('#color-tooltip');
     // using $ to show that we are working with an html element as opposed to data
 
     this.addEventListeners();
@@ -30,6 +31,14 @@ class App {
       this.selectNote(event);
       this.openModal(event);
     }); 
+    
+    document.body.addEventListener('mouseover', event => {
+      this.openTooltip(event);      
+    });
+
+    document.body.addEventListener('mouseout', event => {
+      this.closeTooltip(event);      
+    });
 
     this.$form.addEventListener('submit', event => {
       event.preventDefault();
@@ -99,6 +108,23 @@ class App {
   closeModal(event) {
     this.editNote();
     this.$modal.classList.toggle('open-modal');
+  }
+
+  openTooltip(event) {
+    if (!event.target.matches('.toolbar-color')) return;
+    this.id = event.target.nextElementSibling.dataset.id;
+    // gets note div which allows us to access dataset id
+    const noteCoords = event.target.getBoundingClientRect();
+    // coordinates of where user is hovering to make sure tooltip shows up in right place
+    const horizontal = noteCoords.left;
+    const vertical = window.scrollY;
+    this.$colorTooltip.style.transform = `translate(${horizontal}px, ${vertical}px)`;
+    this.$colorTooltip.style.display = 'flex';
+  }
+
+   closeTooltip(event) {
+    if (!event.target.matches('.toolbar-color')) return;
+    this.$colorTooltip.style.display = 'none';
   }
 
   // destructure note object that allows us to use object shorthand (title & text) 
